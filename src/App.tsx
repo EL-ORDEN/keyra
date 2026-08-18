@@ -73,6 +73,12 @@ const onboardingSteps = [
   },
 ] as const
 
+const recentActivity = [
+  { title: 'Sessão verificada com sucesso', time: 'há 2 min', type: 'success' },
+  { title: 'Senha do GitHub regenerada', time: 'há 1h', type: 'warning' },
+  { title: 'Novo item adicionado na categoria Financeiro', time: 'há 2h', type: 'info' },
+] as const
+
 function getPasswordStrength(password: string): VaultEntry['strength'] {
   if (password.length >= 16 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) {
     return 'Excelente'
@@ -110,6 +116,12 @@ function App() {
   const [authError, setAuthError] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
   const [isCopying, setIsCopying] = useState(false)
+  const [securitySettings, setSecuritySettings] = useState({
+    autoLock: true,
+    breachAlerts: true,
+    clipboardClean: false,
+    localOnly: true,
+  })
   const [hasMaster, setHasMaster] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
     return Boolean(window.localStorage.getItem(MASTER_KEY))
@@ -255,6 +267,14 @@ function App() {
   const handleRemoveEntry = (id: number) => {
     setVault((current) => current.filter((entry) => entry.id !== id))
     setStatusMessage('Credencial removida da vault.')
+  }
+
+  const handleSecurityToggle = (key: keyof typeof securitySettings) => {
+    setSecuritySettings((current) => ({
+      ...current,
+      [key]: !current[key],
+    }))
+    setStatusMessage('Configuração de segurança atualizada.')
   }
 
   if (!hasMaster) {
@@ -432,6 +452,100 @@ function App() {
                 </button>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="security-panel">
+          <div className="panel-header-row compact">
+            <div>
+              <span className="eyebrow dark">Segurança</span>
+              <h2>Centro de proteção</h2>
+            </div>
+          </div>
+
+          <div className="security-grid">
+            {[
+              {
+                key: 'autoLock',
+                label: 'Bloqueio automático',
+                description: 'Trava a sessão após inatividade.',
+              },
+              {
+                key: 'breachAlerts',
+                label: 'Alertas de vazamento',
+                description: 'Monitora exposições de contas sensíveis.',
+              },
+              {
+                key: 'clipboardClean',
+                label: 'Limpeza da área de transferência',
+                description: 'Remove o dado copiado após uso.',
+              },
+              {
+                key: 'localOnly',
+                label: 'Armazenamento local',
+                description: 'Mantém os dados isolados no dispositivo.',
+              },
+            ].map((setting) => (
+              <button
+                key={setting.key}
+                type="button"
+                className="setting-row"
+                onClick={() => handleSecurityToggle(setting.key as keyof typeof securitySettings)}
+              >
+                <div className="setting-copy">
+                  <strong>{setting.label}</strong>
+                  <span>{setting.description}</span>
+                </div>
+
+                <span className={securitySettings[setting.key as keyof typeof securitySettings] ? 'toggle-switch on' : 'toggle-switch'}>
+                  <span className="toggle-knob" />
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="activity-panel">
+          <div className="panel-header-row compact">
+            <div>
+              <span className="eyebrow dark">Atividade</span>
+              <h2>Resumo do dispositivo</h2>
+            </div>
+          </div>
+
+          <div className="activity-grid">
+            <div className="activity-card">
+              <h3>Atividade recente</h3>
+              <ul className="activity-list">
+                {recentActivity.map((item) => (
+                  <li key={item.title} className={item.type}>
+                    <span className="dot" />
+                    <div>
+                      <strong>{item.title}</strong>
+                      <small>{item.time}</small>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="activity-card">
+              <h3>Estado do aparelho</h3>
+              <div className="device-metrics">
+                <div>
+                  <span>Último login</span>
+                  <strong>Hoje · 08:41</strong>
+                </div>
+                <div>
+                  <span>Sincronização</span>
+                  <strong>Protegida</strong>
+                </div>
+                <div>
+                  <span>Biometria</span>
+                  <strong>Disponível</strong>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
