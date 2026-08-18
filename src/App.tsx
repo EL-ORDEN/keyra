@@ -33,8 +33,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div className="brand-wrap">
-          <div className="brand-mark">K</div>
-          <span className="brand-name">Keyra</span>
+          <img src="/keyra-logo.svg" alt="Keyra logo" className="brand-logo" />
         </div>
 
         <nav className="main-nav" aria-label="Navegação principal">

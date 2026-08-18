@@ -27,27 +27,13 @@
 .brand-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
 }
 
-.brand-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #d9b36d 0%, #f6dfaf 100%);
-  color: #111111;
-  font-weight: 800;
-  box-shadow: 0 10px 20px rgba(217, 179, 109, 0.45);
-}
-
-.brand-name {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #f5f1e8;
+.brand-logo {
+  display: block;
+  width: min(220px, 52vw);
+  height: auto;
+  filter: drop-shadow(0 14px 26px rgba(209, 138, 255, 0.2));
 }
 
 .main-nav {
