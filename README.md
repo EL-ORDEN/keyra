@@ -1,77 +1,89 @@
-# React + TypeScript + Vite
+# Keyra — Gerenciador de senhas (protótipo)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositório contém a UI do Keyra — um gerenciador de senhas com foco em privacidade (protótipo). O frontend foi construído com React + TypeScript e empacotado com Vite. Há scaffold básico para empacotamento desktop via Tauri.
 
-Currently, two official plugins are available:
+Sumário rápido
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Layout desktop-first com dashboard, onboarding, painel de segurança e gerador de senhas.
+- Persistência local via `localStorage` (apenas para protótipo).
 
-## React Compiler
+Observação de segurança
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+Os dados são armazenados em `localStorage` sem criptografia. Para uso real em produção é obrigatório adicionar criptografia (ex.: derivação de chave com Argon2/PBKDF2, AES-GCM ou libs de criptografia modernas) e considerar um modelo Zero-Knowledge ou backend seguro.
 
-Note: This will impact Vite dev & build performances.
+Requisitos
 
-## Expanding the ESLint configuration
+- Node.js (v18+)
+- npm
+- Para empacotar com Tauri: Rust toolchain (rustup + cargo) e dependências do sistema (veja https://tauri.app)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Instalação e execução (desenvolvimento)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Instale dependências JS
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Rode o servidor de desenvolvimento do Vite
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run dev
+# abra http://localhost:4173
 ```
+
+Build web e preview
+
+```bash
+npm run build
+npm run preview
+```
+
+Empacotar com Tauri (desktop)
+
+1. Instale Rust (se necessário)
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+2. Instale dependências e (opcional) CLI do Tauri
+
+```bash
+npm install
+npm install -g @tauri-apps/cli
+```
+
+3. Rodar em modo dev (Vite + Tauri window)
+
+```bash
+npm run dev      # starta o Vite
+npm run tauri:dev
+```
+
+4. Gerar build para distribuição
+
+```bash
+npm run build
+npm run tauri:build
+```
+
+Estrutura do projeto
+
+- `src/` — código React (ex.: `src/App.tsx`, `src/index.css`)
+- `public/` — assets públicos (logo, ícones)
+- `dist/` — saída do build web
+- `src-tauri/` — configuração e código Rust/Tauri
+
+Notas adicionais e próximos passos
+
+- Responsividade mobile: priorizar melhorias de layout e espaçamentos.
+- Criptografia: planejar derivação de chave e encriptação antes de persistir dados sensíveis.
+- Tauri: personalize ícones em `src-tauri/icons/` e atualize `tauri.conf.json` quando for empacotar.
+
+Se quiser, posso:
+
+- adicionar instruções específicas para Windows (dependências Tauri/Visual C++). 
+- adicionar ícones e metadados de release.
+- começar a implementação de armazenamento encriptado local.
+
